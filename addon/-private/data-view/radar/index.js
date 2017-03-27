@@ -106,6 +106,8 @@ export default class Radar {
 
   set itemContainer(itemContainer) {
     this._itemContainer = itemContainer;
+    this._paddingBeforeItem = itemContainer.getElementsByClassName('vertical-collection-padding-before')[0];
+    this._paddingAfterItem = itemContainer.getElementsByClassName('vertical-collection-padding-after')[0];
     this._scrollTopOffset = null;
   }
 
@@ -187,6 +189,8 @@ export default class Radar {
       items,
       orderedComponents,
       itemContainer,
+      _paddingBeforeItem,
+      _paddingAfterItem,
 
       firstItemIndex,
       lastItemIndex,
@@ -203,13 +207,13 @@ export default class Radar {
         let movedComponents = orderedComponents.splice(-offsetAmount);
         orderedComponents.unshift(...movedComponents);
 
-        VirtualComponent.moveComponents(itemContainer, movedComponents[0], movedComponents[movedComponents.length - 1], true);
+        VirtualComponent.moveComponents(itemContainer, _paddingBeforeItem, movedComponents[0], movedComponents[movedComponents.length - 1], true);
       } else if (itemDelta > 0) {
         // Scrolling down
         let movedComponents = orderedComponents.splice(0, offsetAmount);
         orderedComponents.push(...movedComponents);
 
-        VirtualComponent.moveComponents(itemContainer, movedComponents[0], movedComponents[movedComponents.length - 1], false);
+        VirtualComponent.moveComponents(itemContainer, _paddingAfterItem, movedComponents[0], movedComponents[movedComponents.length - 1], false);
       }
     }
 
@@ -217,8 +221,8 @@ export default class Radar {
       orderedComponents[i].recycle(items[itemIndex], itemIndex);
     }
 
-    itemContainer.style.paddingTop = `${totalBefore}px`;
-    itemContainer.style.paddingBottom = `${totalAfter}px`;
+    _paddingBeforeItem.style.height = `${totalBefore}px`;
+    _paddingAfterItem.style.height = `${totalAfter}px`;
     itemContainer.style.minHeight = `${total}px`;
   }
 
@@ -272,7 +276,7 @@ export default class Radar {
         const firstIndex = orderedComponents.length - delta;
         const lastIndex = orderedComponents.length - 1;
 
-        VirtualComponent.moveComponents(this.itemContainer, orderedComponents[firstIndex], orderedComponents[lastIndex]);
+        VirtualComponent.moveComponents(this.itemContainer, this._paddingAfterItem, orderedComponents[firstIndex], orderedComponents[lastIndex]);
 
         for (let i = firstIndex; i <= lastIndex; i++) {
           orderedComponents[i].inDOM = true;

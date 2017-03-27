@@ -74,7 +74,7 @@ export default class VirtualComponent {
     return new VirtualComponent(parentToken);
   }
 
-  static moveComponents(element, firstComponent, lastComponent, prepend) {
+  static moveComponents(element, relativeElement, firstComponent, lastComponent, prepend) {
     const rangeToMove = doc.createRange();
 
     rangeToMove.setStart(firstComponent._upperBound, 0);
@@ -92,9 +92,9 @@ export default class VirtualComponent {
     lastComponent._lowerBound = docFragment.lastChild || lastComponent._lowerBound;
 
     if (prepend) {
-      element.insertBefore(docFragment, element.firstChild);
+      element.insertBefore(docFragment, relativeElement.nextSibling);
     } else {
-      element.appendChild(docFragment);
+      element.insertBefore(docFragment, relativeElement);
     }
   }
 }
